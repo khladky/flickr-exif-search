@@ -6,7 +6,6 @@
 <title>Flickr EXIF search URL builder</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size: 15px;
@@ -16,259 +15,64 @@
     min-height: 100vh;
     padding: 2rem 1rem;
   }
-
-  .container {
-    max-width: 640px;
-    margin: 0 auto;
-  }
-
-  header {
-    margin-bottom: 2rem;
-  }
-
-  header h1 {
-    font-size: 22px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 4px;
-  }
-
-  header p {
-    font-size: 14px;
-    color: #6b7280;
-  }
-
-  .card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-  }
-
-  .card-title {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: #9ca3af;
-    margin-bottom: 1rem;
-  }
-
-  .field-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
+  .container { max-width: 640px; margin: 0 auto; }
+  header { margin-bottom: 2rem; }
+  header h1 { font-size: 22px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+  header p { font-size: 14px; color: #6b7280; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .card-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #9ca3af; margin-bottom: 1rem; }
+  .field-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .field-row:last-child { margin-bottom: 0; }
-
-  .field-row label {
-    font-size: 13px;
-    color: #4b5563;
-    width: 170px;
-    flex-shrink: 0;
+  .field-row label { font-size: 13px; color: #4b5563; width: 170px; flex-shrink: 0; }
+  .field-row input[type=text], .field-row input[type=number], .field-row select {
+    border: 1px solid #d1d5db; border-radius: 7px; padding: 6px 10px;
+    font-size: 13px; font-family: inherit; color: #1a1a1a; background: #fff;
+    outline: none; transition: border-color 0.15s; width: 120px;
   }
-
-  .field-row input[type=text],
-  .field-row input[type=number] {
-    border: 1px solid #d1d5db;
-    border-radius: 7px;
-    padding: 6px 10px;
-    font-size: 13px;
-    font-family: inherit;
-    color: #1a1a1a;
-    background: #fff;
-    outline: none;
-    transition: border-color 0.15s;
-    width: 120px;
+  .field-row input[type=text]:focus, .field-row input[type=number]:focus, .field-row select:focus {
+    border-color: #0063dc; box-shadow: 0 0 0 3px rgba(0,99,220,0.1);
   }
-
-  .field-row input[type=text]:focus,
-  .field-row input[type=number]:focus {
-    border-color: #0063dc;
-    box-shadow: 0 0 0 3px rgba(0,99,220,0.1);
-  }
-
-  .field-row input[type=text].wide { width: 220px; }
-
-  .field-row .unit {
-    font-size: 12px;
-    color: #9ca3af;
-  }
-
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
-  }
-
-  .toggle-row input[type=checkbox] {
-    width: 16px;
-    height: 16px;
-    accent-color: #0063dc;
-    cursor: pointer;
-  }
-
-  .toggle-row label {
-    font-size: 13px;
-    color: #374151;
-    cursor: pointer;
-    font-weight: 500;
-  }
-
-  .fields-group {
-    padding-left: 24px;
-    border-left: 2px solid #e5e7eb;
-    margin-left: 7px;
-  }
-
-  .fields-group.disabled {
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  .hint {
-    font-size: 12px;
-    color: #9ca3af;
-    margin-top: 8px;
-    line-height: 1.5;
-  }
-
-  .output-card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-  }
-
-  .output-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: #9ca3af;
-    margin-bottom: 10px;
-  }
-
+  .field-row input[type=text].wide, .field-row select.wide { width: 220px; }
+  .field-row .unit { font-size: 12px; color: #9ca3af; }
+  .toggle-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .toggle-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #0063dc; cursor: pointer; }
+  .toggle-row label { font-size: 13px; color: #374151; cursor: pointer; font-weight: 500; }
+  .fields-group { padding-left: 24px; border-left: 2px solid #e5e7eb; margin-left: 7px; }
+  .fields-group.disabled { opacity: 0.4; pointer-events: none; }
+  .hint { font-size: 12px; color: #9ca3af; margin-top: 8px; line-height: 1.5; }
+  .hint code { font-family: monospace; font-size: 11px; background: #f3f4f6; padding: 1px 4px; border-radius: 3px; }
+  .output-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .output-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #9ca3af; margin-bottom: 10px; }
   .url-display {
-    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-    font-size: 12px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 12px;
-    word-break: break-all;
-    line-height: 1.7;
-    color: #1a1a1a;
-    min-height: 52px;
-    margin-bottom: 12px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace; font-size: 12px;
+    background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
+    padding: 12px; word-break: break-all; line-height: 1.7; color: #1a1a1a;
+    min-height: 52px; margin-bottom: 12px;
   }
-
   .url-display .base { color: #9ca3af; }
   .url-display .params { color: #0063dc; }
-
-  .btn-row {
-    display: flex;
-    gap: 8px;
-  }
-
+  .btn-row { display: flex; gap: 8px; }
   button {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    font-size: 13px;
-    font-family: inherit;
-    font-weight: 500;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-    border: 1px solid #d1d5db;
-    background: #fff;
-    color: #374151;
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+    font-size: 13px; font-family: inherit; font-weight: 500; border-radius: 8px;
+    cursor: pointer; transition: all 0.15s; border: 1px solid #d1d5db;
+    background: #fff; color: #374151;
   }
-
   button:hover { background: #f9fafb; border-color: #9ca3af; }
   button:active { transform: scale(0.98); }
-
-  button.primary {
-    background: #0063dc;
-    border-color: #0063dc;
-    color: #fff;
-  }
-
+  button.primary { background: #0063dc; border-color: #0063dc; color: #fff; }
   button.primary:hover { background: #0052b8; border-color: #0052b8; }
-
-  .info-section {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-top: 1.5rem;
-  }
-
-  .info-section h2 {
-    font-size: 13px;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 10px;
-  }
-
-  .param-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-
-  .param-table th {
-    text-align: left;
-    color: #9ca3af;
-    font-weight: 500;
-    padding: 4px 8px 4px 0;
-    border-bottom: 1px solid #f3f4f6;
-  }
-
-  .param-table td {
-    padding: 5px 8px 5px 0;
-    border-bottom: 1px solid #f3f4f6;
-    color: #4b5563;
-    vertical-align: top;
-  }
-
+  .info-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-top: 1.5rem; }
+  .info-section h2 { font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 10px; }
+  .param-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .param-table th { text-align: left; color: #9ca3af; font-weight: 500; padding: 4px 8px 4px 0; border-bottom: 1px solid #f3f4f6; }
+  .param-table td { padding: 5px 8px 5px 0; border-bottom: 1px solid #f3f4f6; color: #4b5563; vertical-align: top; }
   .param-table tr:last-child td { border-bottom: none; }
-
-  .param-table code {
-    font-family: "SF Mono", "Fira Code", monospace;
-    font-size: 11px;
-    background: #f3f4f6;
-    padding: 1px 5px;
-    border-radius: 4px;
-    color: #0063dc;
-  }
-
-  .badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 1px 6px;
-    border-radius: 4px;
-  }
-
+  .param-table code { font-family: "SF Mono", "Fira Code", monospace; font-size: 11px; background: #f3f4f6; padding: 1px 5px; border-radius: 4px; color: #0063dc; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; }
   .badge-ok { background: #d1fae5; color: #065f46; }
   .badge-no { background: #fee2e2; color: #991b1b; }
-
-  footer {
-    margin-top: 2rem;
-    font-size: 12px;
-    color: #9ca3af;
-    text-align: center;
-    line-height: 1.7;
-  }
-
+  footer { margin-top: 2rem; font-size: 12px; color: #9ca3af; text-align: center; line-height: 1.7; }
   footer a { color: #6b7280; }
 </style>
 </head>
@@ -281,20 +85,29 @@
   </header>
 
   <div class="card">
-    <div class="card-title">Your Flickr username</div>
+    <div class="card-title">Your Flickr username or NSID</div>
     <div class="field-row">
       <label for="username">Username</label>
       <input type="text" id="username" class="wide" placeholder="e.g. kh1234567890" oninput="build()">
     </div>
-    <div class="hint">Leave blank to search all of Flickr (may be slow or throttled for some filters).</div>
+    <div class="field-row">
+      <label for="nsid">NSID (alternative)</label>
+      <input type="text" id="nsid" class="wide" placeholder="e.g. 20564446@N00" oninput="build()">
+    </div>
+    <div class="hint">NSID takes priority if both are entered. Find your NSID at idgettr.com. Leave both blank to search all of Flickr.</div>
   </div>
 
   <div class="card">
-    <div class="card-title">Text search</div>
+    <div class="card-title">Search terms</div>
     <div class="field-row">
-      <label for="qtext">Search text or tag</label>
+      <label for="qtext">Text search</label>
       <input type="text" id="qtext" class="wide" placeholder="e.g. night" oninput="build()">
     </div>
+    <div class="field-row">
+      <label for="tags">Tags</label>
+      <input type="text" id="tags" class="wide" placeholder="e.g. tz100" oninput="build()">
+    </div>
+    <div class="hint">Text searches titles and descriptions. Tags searches tag fields only. Both can be used together.</div>
   </div>
 
   <div class="card">
@@ -334,7 +147,7 @@
         <input type="number" id="xeh" min="0" step="0.001" value="30" oninput="build()">
         <span class="unit">seconds</span>
       </div>
-      <div class="hint">Known display bug: result page text may round fractional values to 0, but the filter works correctly.</div>
+      <div class="hint">Fractional shutter speeds work correctly — e.g. xel=0.001 for 1/1000s. Known display bug: the text shown above the results page may incorrectly round these to 0, but the filtering itself is accurate.</div>
     </div>
   </div>
 
@@ -347,15 +160,15 @@
     <div class="fields-group disabled" id="fl">
       <div class="field-row">
         <label for="xfl">Min focal length</label>
-        <input type="number" id="xfl" min="1" max="2000" step="1" value="24" oninput="build()">
+        <input type="number" id="xfl" min="0.1" max="2000" step="0.01" value="24" oninput="build()">
         <span class="unit">mm</span>
       </div>
       <div class="field-row">
         <label for="xfh">Max focal length</label>
-        <input type="number" id="xfh" min="1" max="2000" step="1" value="70" oninput="build()">
+        <input type="number" id="xfh" min="0.1" max="2000" step="0.01" value="70" oninput="build()">
         <span class="unit">mm</span>
       </div>
-      <div class="hint">Uses 35mm-equivalent focal length. On a 1.5× APS-C crop sensor, multiply your actual focal length by 1.5 — e.g. a 50mm lens = enter 75.</div>
+      <div class="hint">Uses <strong>actual</strong> focal length as recorded in EXIF — not 35mm equivalent. Decimal values are supported (e.g. 25.64). Uses <code>exif_min_focallen</code> / <code>exif_max_focallen</code> parameters.</div>
     </div>
   </div>
 
@@ -370,8 +183,30 @@
         <label for="cmval">Make / model</label>
         <input type="text" id="cmval" class="wide" placeholder="e.g. nikon/d800" oninput="build()">
       </div>
-      <div class="hint">Lowercase with underscores for spaces: <code style="font-family:monospace;font-size:11px;background:#f3f4f6;padding:1px 4px;border-radius:3px;">canon/eos_5d</code> &nbsp; <code style="font-family:monospace;font-size:11px;background:#f3f4f6;padding:1px 4px;border-radius:3px;">sony/ilce-7m3</code> &nbsp; <code style="font-family:monospace;font-size:11px;background:#f3f4f6;padding:1px 4px;border-radius:3px;">nikon/d800</code></div>
+      <div class="hint">Lowercase, make and model separated by slash, spaces as underscores: <code>canon/eos_5d</code> &nbsp; <code>nikon/d800</code> &nbsp; <code>sony/ilce-7m3</code><br>Only works if the camera model is present in the photo's EXIF data. If Flickr did not record a model string, this filter will not work regardless of what you enter.</div>
     </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Sort order &amp; display</div>
+    <div class="field-row">
+      <label for="sort">Sort by</label>
+      <select id="sort" class="wide" onchange="build()">
+        <option value="">Default</option>
+        <option value="date-taken-desc">Date taken — newest first</option>
+        <option value="date-taken-asc">Date taken — oldest first</option>
+        <option value="date-posted-desc">Date posted — newest first</option>
+        <option value="date-posted-asc">Date posted — oldest first</option>
+        <option value="interestingness-desc">Interestingness — high to low</option>
+        <option value="interestingness-asc">Interestingness — low to high</option>
+        <option value="relevance">Relevance</option>
+      </select>
+    </div>
+    <div class="toggle-row" style="margin-top:8px; margin-bottom:0;">
+      <input type="checkbox" id="view_all" onchange="build()">
+      <label for="view_all">Show all results in one view (view_all=1)</label>
+    </div>
+    <div class="hint" style="margin-top:8px;">view_all=1 prevents Flickr splitting results across photos/people/groups tabs.</div>
   </div>
 
   <div class="output-card">
@@ -400,15 +235,23 @@
       <tr><td><code>xeh</code></td><td>Max exposure</td><td>seconds</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>exif_min_exposure</code></td><td>Min exposure (alt style)</td><td>seconds</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>exif_max_exposure</code></td><td>Max exposure (alt style)</td><td>seconds</td><td><span class="badge badge-ok">works</span></td></tr>
-      <tr><td><code>xfl</code></td><td>Min focal length</td><td>mm (35mm eq)</td><td><span class="badge badge-ok">works</span></td></tr>
-      <tr><td><code>xfh</code></td><td>Max focal length</td><td>mm (35mm eq)</td><td><span class="badge badge-ok">works</span></td></tr>
-      <tr><td><code>cm</code></td><td>Camera model</td><td>make/model</td><td><span class="badge badge-ok">works*</span></td></tr>
+      <tr><td><code>xfl</code></td><td>Min focal length</td><td>mm (actual)</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>xfh</code></td><td>Max focal length</td><td>mm (actual)</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>exif_min_focallen</code></td><td>Min focal length (alt style)</td><td>mm (actual)</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>exif_max_focallen</code></td><td>Max focal length (alt style)</td><td>mm (actual)</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>cm</code></td><td>Camera model</td><td>make/model string</td><td><span class="badge badge-ok">works*</span></td></tr>
+      <tr><td><code>w</code></td><td>Username</td><td>Flickr username</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>user_id</code></td><td>User NSID</td><td>e.g. 20564446@N00</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>text</code></td><td>Text search</td><td>string</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>tags</code></td><td>Tag search</td><td>string</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>sort</code></td><td>Sort order</td><td>see builder</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>view_all=1</code></td><td>Single results view</td><td>—</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>xil / xih</code></td><td>ISO range</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
       <tr><td><code>exif_min/max_iso</code></td><td>ISO range (alt style)</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
       <tr><td><code>xff</code></td><td>Flash fired</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
       <tr><td><code>lens / exif_lens</code></td><td>Lens model</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
     </table>
-    <div class="hint" style="margin-top:10px;">* <code style="font-family:monospace;font-size:11px;background:#f3f4f6;padding:1px 4px;border-radius:3px;">cm=</code> works best scoped to your own stream. May be unreliable on global searches.</div>
+    <div class="hint" style="margin-top:10px;">* <code>cm=</code> requires the camera model to be present in the photo's EXIF. If Flickr did not record a model string, this filter will not work. Works best scoped to your own stream. May be unreliable on global searches.<br><br>Note: focal length parameters use <strong>actual</strong> recorded focal length, not 35mm equivalent. The 2008 blog posts that first documented these parameters incorrectly stated 35mm equivalent.</div>
   </div>
 
   <footer>
@@ -416,7 +259,8 @@
     (<a href="https://www.flickr.com/photos/blech/1549349333" target="_blank">flickr.com/photos/blech/1549349333</a>)
     and documented by <a href="http://blog.michael-lowry.com/2008/01/flickr-exif-search.html" target="_blank">Michael A. Lowry (2008)</a>
     and <a href="https://cogdogblog.com/2015/05/monkeying-around/" target="_blank">Alan Levine (2015)</a>.
-    Alternative exif_min/max_ styles and non-working parameters confirmed June 2026.
+    exif_min/max_focallen, exif_min/max_aperture, exif_min/max_exposure, tags=, sort=, view_all=1
+    and non-working parameters confirmed June 2026.
   </footer>
 
 </div>
@@ -427,20 +271,26 @@ function toggle(id) {
   var cb = document.getElementById('use_' + id);
   el.classList.toggle('disabled', !cb.checked);
 }
-
 function v(id) { return document.getElementById(id).value.trim(); }
 function checked(id) { return document.getElementById(id).checked; }
-
 var currentUrl = '';
 
 function build() {
   var params = [];
+  var nsid = v('nsid');
   var username = v('username');
-  if (username) params.push('w=' + encodeURIComponent(username));
+  if (nsid) {
+    params.push('user_id=' + encodeURIComponent(nsid));
+  } else if (username) {
+    params.push('w=' + encodeURIComponent(username));
+  }
 
   var q = v('qtext');
-  if (!q && checked('use_cm')) q = '+';
-  params.push('q=' + encodeURIComponent(q));
+  var tags = v('tags');
+  var needQ = !q && checked('use_cm');
+  if (q) params.push('text=' + encodeURIComponent(q));
+  else if (needQ) params.push('text=%2B');
+  if (tags) params.push('tags=' + encodeURIComponent(tags));
 
   if (checked('use_ap')) {
     var xal = v('xal'), xah = v('xah');
@@ -454,13 +304,17 @@ function build() {
   }
   if (checked('use_fl')) {
     var xfl = v('xfl'), xfh = v('xfh');
-    if (xfl) params.push('xfl=' + xfl);
-    if (xfh) params.push('xfh=' + xfh);
+    if (xfl) params.push('exif_min_focallen=' + xfl);
+    if (xfh) params.push('exif_max_focallen=' + xfh);
   }
   if (checked('use_cm')) {
     var cm = v('cmval');
     if (cm) params.push('cm=' + encodeURIComponent(cm));
   }
+
+  var sort = v('sort');
+  if (sort) params.push('sort=' + sort);
+  if (checked('view_all')) params.push('view_all=1');
 
   var base = 'https://www.flickr.com/search/?';
   currentUrl = base + params.join('&');

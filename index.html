@@ -41,6 +41,11 @@
   .fields-group.disabled { opacity: 0.4; pointer-events: none; }
   .hint { font-size: 12px; color: #9ca3af; margin-top: 8px; line-height: 1.5; }
   .hint code { font-family: monospace; font-size: 11px; background: #f3f4f6; padding: 1px 4px; border-radius: 3px; }
+  .radio-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .radio-row input[type=radio] { accent-color: #0063dc; cursor: pointer; }
+  .radio-row label { font-size: 13px; color: #374151; cursor: pointer; }
+  .sub-option { margin-top: 10px; }
+  .sub-option.hidden { display: none; }
   .output-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
   .output-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #9ca3af; margin-bottom: 10px; }
   .url-display {
@@ -98,7 +103,7 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Search terms</div>
+    <div class="card-title">Text and tag search</div>
     <div class="field-row">
       <label for="qtext">Text search</label>
       <input type="text" id="qtext" class="wide" placeholder="e.g. night" oninput="build()">
@@ -108,6 +113,46 @@
       <input type="text" id="tags" class="wide" placeholder="e.g. tz100" oninput="build()">
     </div>
     <div class="hint">Text searches titles and descriptions. Tags searches tag fields only. Both can be used together.</div>
+    <div class="hint" style="margin-top:6px;">To scope results to your own photos, add <code>w=yourusername</code> or <code>user_id=yourNSID</code> using the fields above. Without these, the search covers all of Flickr.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Camera</div>
+    <div class="toggle-row">
+      <input type="checkbox" id="use_cam" onchange="toggle('cam'); build()">
+      <label for="use_cam">Filter by camera</label>
+    </div>
+    <div class="fields-group disabled" id="cam">
+      <div class="radio-row">
+        <input type="radio" name="cammode" id="cam_exif" value="exif" checked onchange="switchCamMode(); build()">
+        <label for="cam_exif">Use EXIF model string (cm=)</label>
+      </div>
+      <div class="sub-option" id="sub_exif">
+        <div class="field-row">
+          <label for="cmval">Make / model</label>
+          <input type="text" id="cmval" class="wide" placeholder="e.g. nikon/d800" oninput="build()">
+        </div>
+        <div class="hint">Lowercase, make/model separated by slash, spaces as underscores: <code>canon/eos_5d</code> <code>nikon/d800</code> <code>sony/ilce-7m3</code><br>Only works if Flickr recorded a model string in the EXIF. If results look wrong, switch to tag/text method below.</div>
+      </div>
+      <div class="radio-row" style="margin-top:12px;">
+        <input type="radio" name="cammode" id="cam_tag" value="tag" onchange="switchCamMode(); build()">
+        <label for="cam_tag">Use tag or text search instead</label>
+      </div>
+      <div class="sub-option hidden" id="sub_tag">
+        <div class="field-row">
+          <label for="camtag">Camera tag</label>
+          <input type="text" id="camtag" class="wide" placeholder="e.g. tz100" oninput="build()">
+        </div>
+        <div class="field-row">
+          <label for="camtagmode">Search in</label>
+          <select id="camtagmode" onchange="build()">
+            <option value="tags">Tags</option>
+            <option value="text">Text</option>
+          </select>
+        </div>
+        <div class="hint">Useful when cm= doesn't work — search for photos tagged or titled with the camera name instead.</div>
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -160,30 +205,15 @@
     <div class="fields-group disabled" id="fl">
       <div class="field-row">
         <label for="xfl">Min focal length</label>
-        <input type="number" id="xfl" min="0.1" max="2000" step="0.01" value="24" oninput="build()">
+        <input type="number" id="xfl" min="0.1" max="2000" step="0.01" value="9" oninput="build()">
         <span class="unit">mm</span>
       </div>
       <div class="field-row">
         <label for="xfh">Max focal length</label>
-        <input type="number" id="xfh" min="0.1" max="2000" step="0.01" value="70" oninput="build()">
+        <input type="number" id="xfh" min="0.1" max="2000" step="0.01" value="91" oninput="build()">
         <span class="unit">mm</span>
       </div>
-      <div class="hint">Uses <strong>actual</strong> focal length as recorded in EXIF — not 35mm equivalent. Decimal values are supported (e.g. 25.64). Uses <code>exif_min_focallen</code> / <code>exif_max_focallen</code> parameters.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Camera model</div>
-    <div class="toggle-row">
-      <input type="checkbox" id="use_cm" onchange="toggle('cm'); build()">
-      <label for="use_cm">Filter by camera model</label>
-    </div>
-    <div class="fields-group disabled" id="cm">
-      <div class="field-row">
-        <label for="cmval">Make / model</label>
-        <input type="text" id="cmval" class="wide" placeholder="e.g. nikon/d800" oninput="build()">
-      </div>
-      <div class="hint">Lowercase, make and model separated by slash, spaces as underscores: <code>canon/eos_5d</code> &nbsp; <code>nikon/d800</code> &nbsp; <code>sony/ilce-7m3</code><br>Only works if the camera model is present in the photo's EXIF data. If Flickr did not record a model string, this filter will not work regardless of what you enter.</div>
+      <div class="hint">Uses <strong>actual</strong> focal length as recorded in EXIF — not 35mm equivalent. Decimal values are supported (e.g. 25.64).</div>
     </div>
   </div>
 
@@ -251,7 +281,7 @@
       <tr><td><code>xff</code></td><td>Flash fired</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
       <tr><td><code>lens / exif_lens</code></td><td>Lens model</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
     </table>
-    <div class="hint" style="margin-top:10px;">* <code>cm=</code> requires the camera model to be present in the photo's EXIF. If Flickr did not record a model string, this filter will not work. Works best scoped to your own stream. May be unreliable on global searches.<br><br>Note: focal length parameters use <strong>actual</strong> recorded focal length, not 35mm equivalent. The 2008 blog posts that first documented these parameters incorrectly stated 35mm equivalent.</div>
+    <div class="hint" style="margin-top:10px;">* <code>cm=</code> requires the camera model to be present in the photo's EXIF. Many cameras do not have a model string recorded by Flickr — in that case use <code>tags=</code> or <code>text=</code> with the camera name instead. Focal length parameters use <strong>actual</strong> recorded focal length, not 35mm equivalent.</div>
   </div>
 
   <footer>
@@ -259,8 +289,8 @@
     (<a href="https://www.flickr.com/photos/blech/1549349333" target="_blank">flickr.com/photos/blech/1549349333</a>)
     and documented by <a href="http://blog.michael-lowry.com/2008/01/flickr-exif-search.html" target="_blank">Michael A. Lowry (2008)</a>
     and <a href="https://cogdogblog.com/2015/05/monkeying-around/" target="_blank">Alan Levine (2015)</a>.
-    exif_min/max_focallen, exif_min/max_aperture, exif_min/max_exposure, tags=, sort=, view_all=1
-    and non-working parameters confirmed June 2026.
+    exif_min/max_focallen, exif_min/max_aperture, exif_min/max_exposure, tags=, user_id=, sort=, view_all=1,
+    focal length correction and non-working parameters confirmed June 2026.
   </footer>
 
 </div>
@@ -271,8 +301,16 @@ function toggle(id) {
   var cb = document.getElementById('use_' + id);
   el.classList.toggle('disabled', !cb.checked);
 }
+
+function switchCamMode() {
+  var isExif = document.getElementById('cam_exif').checked;
+  document.getElementById('sub_exif').classList.toggle('hidden', !isExif);
+  document.getElementById('sub_tag').classList.toggle('hidden', isExif);
+}
+
 function v(id) { return document.getElementById(id).value.trim(); }
 function checked(id) { return document.getElementById(id).checked; }
+
 var currentUrl = '';
 
 function build() {
@@ -285,12 +323,29 @@ function build() {
     params.push('w=' + encodeURIComponent(username));
   }
 
+  var useCam = checked('use_cam');
+  var camIsExif = document.getElementById('cam_exif').checked;
+  var camTag = v('camtag');
+  var camTagMode = v('camtagmode');
+
   var q = v('qtext');
   var tags = v('tags');
-  var needQ = !q && checked('use_cm');
-  if (q) params.push('text=' + encodeURIComponent(q));
-  else if (needQ) params.push('text=%2B');
-  if (tags) params.push('tags=' + encodeURIComponent(tags));
+
+  if (useCam && !camIsExif && camTag) {
+    if (camTagMode === 'tags') {
+      var allTags = tags ? tags + ',' + camTag : camTag;
+      if (q) params.push('text=' + encodeURIComponent(q));
+      params.push('tags=' + encodeURIComponent(allTags));
+    } else {
+      var allText = q ? q + ' ' + camTag : camTag;
+      params.push('text=' + encodeURIComponent(allText));
+      if (tags) params.push('tags=' + encodeURIComponent(tags));
+    }
+  } else {
+    if (q) params.push('text=' + encodeURIComponent(q));
+    else if (useCam && camIsExif) params.push('text=%2B');
+    if (tags) params.push('tags=' + encodeURIComponent(tags));
+  }
 
   if (checked('use_ap')) {
     var xal = v('xal'), xah = v('xah');
@@ -307,7 +362,7 @@ function build() {
     if (xfl) params.push('exif_min_focallen=' + xfl);
     if (xfh) params.push('exif_max_focallen=' + xfh);
   }
-  if (checked('use_cm')) {
+  if (useCam && camIsExif) {
     var cm = v('cmval');
     if (cm) params.push('cm=' + encodeURIComponent(cm));
   }

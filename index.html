@@ -218,6 +218,65 @@
   </div>
 
   <div class="card">
+    <div class="card-title">Image dimensions</div>
+    <div class="toggle-row">
+      <input type="checkbox" id="use_dim" onchange="toggle('dim'); build()">
+      <label for="use_dim">Filter by image dimensions</label>
+    </div>
+    <div class="fields-group disabled" id="dim">
+      <div class="field-row">
+        <label for="dimmode">Mode</label>
+        <select id="dimmode" onchange="build()">
+          <option value="min">At least this size</option>
+          <option value="max">At most this size</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label for="dimwidth">Width</label>
+        <input type="number" id="dimwidth" min="1" max="20000" step="1" value="8000" oninput="build()">
+        <span class="unit">px</span>
+      </div>
+      <div class="field-row">
+        <label for="dimheight">Height</label>
+        <input type="number" id="dimheight" min="1" max="20000" step="1" value="8000" oninput="build()">
+        <span class="unit">px</span>
+      </div>
+      <div class="hint">Filters by the largest available image size for each photo. Both width and height must be supplied together — neither works alone, and neither works without selecting a mode above.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Content type</div>
+    <div class="toggle-row">
+      <input type="checkbox" id="use_content" onchange="toggle('content'); build()">
+      <label for="use_content">Filter by content type</label>
+    </div>
+    <div class="fields-group disabled" id="content">
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <input type="checkbox" id="ct_photos" checked onchange="build()">
+        <label for="ct_photos">Photos</label>
+      </div>
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <input type="checkbox" id="ct_screenshots" onchange="build()">
+        <label for="ct_screenshots">Screenshots</label>
+      </div>
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <input type="checkbox" id="ct_illustration" onchange="build()">
+        <label for="ct_illustration">Illustration / Art</label>
+      </div>
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <input type="checkbox" id="ct_virtual" onchange="build()">
+        <label for="ct_virtual">Virtual Photography</label>
+      </div>
+      <div class="toggle-row" style="margin-bottom:0;">
+        <input type="checkbox" id="ct_videos" checked onchange="build()">
+        <label for="ct_videos">Videos</label>
+      </div>
+      <div class="hint">Default Flickr search shows Photos and Videos only. Tick additional types to broaden the search — useful for finding illustrations, screenshots, or AI/virtual photography that would otherwise be excluded.</div>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-title">Sort order &amp; display</div>
     <div class="field-row">
       <label for="sort">Sort by</label>
@@ -276,12 +335,15 @@
       <tr><td><code>tags</code></td><td>Tag search</td><td>string</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>sort</code></td><td>Sort order</td><td>see builder</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>view_all=1</code></td><td>Single results view</td><td>—</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>dimension_search_mode</code></td><td>Image size filter mode</td><td>min / max</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>width</code> + <code>height</code></td><td>Image size threshold (with dimension_search_mode)</td><td>pixels</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>content_types</code></td><td>Content type filter</td><td>comma-separated IDs, see below</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>xil / xih</code></td><td>ISO range</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
       <tr><td><code>exif_min/max_iso</code></td><td>ISO range (alt style)</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
       <tr><td><code>xff</code></td><td>Flash fired</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
       <tr><td><code>lens / exif_lens</code></td><td>Lens model</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
     </table>
-    <div class="hint" style="margin-top:10px;">* <code>cm=</code> requires the camera model to be present in the photo's EXIF. Many cameras do not have a model string recorded by Flickr — in that case use <code>tags=</code> or <code>text=</code> with the camera name instead. Focal length parameters use <strong>actual</strong> recorded focal length, not 35mm equivalent.</div>
+    <div class="hint" style="margin-top:10px;">* <code>cm=</code> requires the camera model to be present in the photo's EXIF. Many cameras do not have a model string recorded by Flickr — in that case use <code>tags=</code> or <code>text=</code> with the camera name instead. Focal length parameters use <strong>actual</strong> recorded focal length, not 35mm equivalent. <code>width=</code>/<code>height=</code> only take effect when <code>dimension_search_mode=</code> is also set — both width and height are required together, and standalone forms like <code>min_width=</code> have no effect. <code>content_types=</code> IDs: 0=Photos, 1=Screenshots, 2=Illustration/Art, 3=Virtual Photography, 4=Videos — default search shows Photos and Videos only.</div>
   </div>
 
   <footer>
@@ -289,8 +351,9 @@
     (<a href="https://www.flickr.com/photos/blech/1549349333" target="_blank">flickr.com/photos/blech/1549349333</a>)
     and documented by <a href="http://blog.michael-lowry.com/2008/01/flickr-exif-search.html" target="_blank">Michael A. Lowry (2008)</a>
     and <a href="https://cogdogblog.com/2015/05/monkeying-around/" target="_blank">Alan Levine (2015)</a>.
+    content_types= documented by the <a href="https://www.flickr.org/flickr-commons-about-content-type-on-flickr-com/" target="_blank">Flickr Foundation (2023)</a>.
     exif_min/max_focallen, exif_min/max_aperture, exif_min/max_exposure, tags=, user_id=, sort=, view_all=1,
-    focal length correction and non-working parameters confirmed June 2026.
+    dimension_search_mode/width/height, focal length correction and non-working parameters confirmed June 2026.
   </footer>
 
 </div>
@@ -365,6 +428,25 @@ function build() {
   if (useCam && camIsExif) {
     var cm = v('cmval');
     if (cm) params.push('cm=' + encodeURIComponent(cm));
+  }
+
+  if (checked('use_content')) {
+    var ctIds = [];
+    if (checked('ct_photos')) ctIds.push('0');
+    if (checked('ct_screenshots')) ctIds.push('1');
+    if (checked('ct_illustration')) ctIds.push('2');
+    if (checked('ct_virtual')) ctIds.push('3');
+    if (checked('ct_videos')) ctIds.push('4');
+    if (ctIds.length) params.push('content_types=' + ctIds.join(','));
+  }
+
+  if (checked('use_dim')) {
+    var dw = v('dimwidth'), dh = v('dimheight'), dmode = v('dimmode');
+    if (dw && dh) {
+      params.push('dimension_search_mode=' + dmode);
+      params.push('width=' + dw);
+      params.push('height=' + dh);
+    }
   }
 
   var sort = v('sort');

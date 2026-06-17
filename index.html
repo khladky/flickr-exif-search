@@ -93,9 +93,18 @@
     <div class="card-title">Scope to a specific user</div>
     <div class="field-row">
       <label for="nsid">Flickr NSID</label>
-      <input type="text" id="nsid" class="wide" placeholder="e.g. 20564446@N00" oninput="build()">
+      <input type="text" id="nsid" class="wide" placeholder="e.g. 99999999@N00" oninput="build()">
     </div>
     <div class="hint">Scoping to a user requires their Flickr NSID — a plain username does not work for this, even though it looks similar. To find a Flickr NSID, search "flickr nsid of username" specifically in <strong>Google AI Mode</strong> — it can look this up directly. Alternatively, view the page source of the person's Flickr profile (flickr.com/people/username/) and search for "nsid". Leave blank to search all of Flickr.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Exclude users</div>
+    <div class="field-row">
+      <label for="eui">Flickr NSID(s) to exclude</label>
+      <input type="text" id="eui" class="wide" placeholder="e.g. 11111111@N01,22222222@N02" oninput="build()">
+    </div>
+    <div class="hint">Useful when one or more people's mistagged or overtagged photos are cluttering your results. Requires Flickr NSIDs, found the same way as above. Multiple users can be excluded at once by separating their NSIDs with a comma, e.g. 11111111@N01,22222222@N02. Leave blank to exclude no one.</div>
   </div>
 
   <div class="card">
@@ -327,8 +336,9 @@
       <tr><td><code>exif_min_focallen</code></td><td>Min focal length (alt style)</td><td>mm (actual)</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>exif_max_focallen</code></td><td>Max focal length (alt style)</td><td>mm (actual)</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>cm</code></td><td>Camera model</td><td>make/model string</td><td><span class="badge badge-ok">works*</span></td></tr>
-      <tr><td><code>w</code></td><td>Scope to user (Flickr NSID only — a plain username does not work)</td><td>e.g. 20564446@N00</td><td><span class="badge badge-ok">works</span></td></tr>
-      <tr><td><code>user_id</code></td><td>Scope to user, alternative parameter name</td><td>e.g. 20564446@N00</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>w</code></td><td>Scope to user (Flickr NSID only — a plain username does not work)</td><td>e.g. 99999999@N00</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>user_id</code></td><td>Scope to user, alternative parameter name</td><td>e.g. 99999999@N00</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>eui</code></td><td>Exclude one or more users' photos (comma-separated NSIDs)</td><td>Flickr NSID</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>text</code></td><td>Text search</td><td>string</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>tags</code></td><td>Tag search</td><td>string</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>sort</code></td><td>Sort order</td><td>see builder</td><td><span class="badge badge-ok">works</span></td></tr>
@@ -350,7 +360,7 @@
     and documented by <a href="http://blog.michael-lowry.com/2008/01/flickr-exif-search.html" target="_blank">Michael A. Lowry (2008)</a>
     and <a href="https://cogdogblog.com/2015/05/monkeying-around/" target="_blank">Alan Levine (2015)</a>.
     content_types= documented by the <a href="https://www.flickr.org/flickr-commons-about-content-type-on-flickr-com/" target="_blank">Flickr Foundation (2023)</a>.
-    exif_min/max_focallen, exif_min/max_aperture, exif_min/max_exposure, tags=, user_id=, sort=, view_all=1,
+    exif_min/max_focallen, exif_min/max_aperture, exif_min/max_exposure, tags=, user_id=, eui=, sort=, view_all=1,
     dimension_search_mode/width/height, focal length correction and non-working parameters confirmed June 2026.
   </footer>
 
@@ -379,6 +389,10 @@ function build() {
   var nsid = v('nsid');
   if (nsid) {
     params.push('user_id=' + encodeURIComponent(nsid));
+  }
+  var eui = v('eui');
+  if (eui) {
+    params.push('eui=' + encodeURIComponent(eui));
   }
 
   var useCam = checked('use_cam');

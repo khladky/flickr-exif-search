@@ -15,31 +15,36 @@
     min-height: 100vh;
     padding: 2rem 1rem;
   }
-  .container { max-width: 640px; margin: 0 auto; }
+  .container { max-width: 900px; margin: 0 auto; }
   header { margin-bottom: 2rem; }
   header h1 { font-size: 22px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
   header p { font-size: 14px; color: #6b7280; }
-  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
-  .card-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #9ca3af; margin-bottom: 1rem; }
-  .field-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 0; height: 100%; }
+  .filters-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; align-items: stretch; }
+  @media (max-width: 760px) {
+    .filters-grid { grid-template-columns: 1fr; }
+    .container { max-width: 640px; }
+  }
+  .card-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #1a1a1a; margin-bottom: 1rem; }
+  .field-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
   .field-row:last-child { margin-bottom: 0; }
-  .field-row label { font-size: 13px; color: #4b5563; width: 170px; flex-shrink: 0; }
+  .field-row label { font-size: 13px; color: #4b5563; flex: 0 1 140px; min-width: 80px; }
   .field-row input[type=text], .field-row input[type=number], .field-row select {
     border: 1px solid #d1d5db; border-radius: 7px; padding: 6px 10px;
     font-size: 13px; font-family: inherit; color: #1a1a1a; background: #fff;
-    outline: none; transition: border-color 0.15s; width: 120px;
+    outline: none; transition: border-color 0.15s; flex: 1 1 100px; min-width: 70px; max-width: 220px;
   }
   .field-row input[type=text]:focus, .field-row input[type=number]:focus, .field-row select:focus {
     border-color: #0063dc; box-shadow: 0 0 0 3px rgba(0,99,220,0.1);
   }
-  .field-row input[type=text].wide, .field-row select.wide { width: 220px; }
-  .field-row .unit { font-size: 12px; color: #9ca3af; }
+  .field-row input[type=text].wide, .field-row select.wide { flex: 1 1 180px; max-width: 260px; }
+  .field-row .unit { font-size: 12px; color: #9ca3af; flex-shrink: 0; }
   .toggle-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
   .toggle-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #0063dc; cursor: pointer; }
   .toggle-row label { font-size: 13px; color: #374151; cursor: pointer; font-weight: 500; }
-  .fields-group { padding-left: 24px; border-left: 2px solid #e5e7eb; margin-left: 7px; }
-  .fields-group.disabled { opacity: 0.4; pointer-events: none; }
-  .hint { font-size: 12px; color: #9ca3af; margin-top: 8px; line-height: 1.5; }
+  .fields-group { padding: 10px 12px 10px 22px; border-left: 2px solid #e5e7eb; margin-left: 7px; border-radius: 0 8px 8px 0; transition: background-color 0.15s; }
+  .fields-group.disabled { background: #f3f4f6; pointer-events: none; }
+  .hint { font-size: 12px; color: #1a1a1a; margin-top: 8px; line-height: 1.5; }
   .hint code { font-family: monospace; font-size: 11px; background: #f3f4f6; padding: 1px 4px; border-radius: 3px; }
   .radio-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
   .radio-row input[type=radio] { accent-color: #0063dc; cursor: pointer; }
@@ -69,6 +74,11 @@
   button.primary:hover { background: #0052b8; border-color: #0052b8; }
   .info-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-top: 1.5rem; }
   .info-section h2 { font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 10px; }
+  .info-section summary { font-size: 13px; font-weight: 600; color: #374151; cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px; }
+  .info-section summary::-webkit-details-marker { display: none; }
+  .info-section summary::before { content: '▸'; font-size: 11px; color: #9ca3af; transition: transform 0.15s; display: inline-block; }
+  .info-section details[open] summary::before { transform: rotate(90deg); }
+  .info-section details[open] summary { margin-bottom: 10px; }
   .param-table { width: 100%; border-collapse: collapse; font-size: 12px; }
   .param-table th { text-align: left; color: #9ca3af; font-weight: 500; padding: 4px 8px 4px 0; border-bottom: 1px solid #f3f4f6; }
   .param-table td { padding: 5px 8px 5px 0; border-bottom: 1px solid #f3f4f6; color: #4b5563; vertical-align: top; }
@@ -88,6 +98,8 @@
     <h1>Flickr EXIF search URL builder</h1>
     <p>Build search URLs using Flickr's undocumented EXIF filter parameters. Confirmed working June 2026.</p>
   </header>
+
+  <div class="filters-grid">
 
   <div class="card">
     <div class="card-title">Scope to a specific user</div>
@@ -305,6 +317,8 @@
     <div class="hint" style="margin-top:8px;">view_all=1 prevents Flickr splitting results across photos/people/groups tabs.</div>
   </div>
 
+  </div>
+
   <div class="output-card">
     <div class="output-label">Generated URL</div>
     <div class="url-display" id="urlout"></div>
@@ -315,7 +329,8 @@
   </div>
 
   <div class="info-section">
-    <h2>All confirmed working parameters</h2>
+    <details>
+    <summary>All confirmed working parameters</summary>
     <table class="param-table">
       <tr>
         <th>Parameter</th>
@@ -352,6 +367,7 @@
       <tr><td><code>lens / exif_lens</code></td><td>Lens model</td><td>—</td><td><span class="badge badge-no">not working</span></td></tr>
     </table>
     <div class="hint" style="margin-top:10px;">* <code>cm=</code> requires the camera model to be present in the photo's EXIF. Many cameras do not have a model string recorded by Flickr — in that case use <code>tags=</code> or <code>text=</code> with the camera name instead. Focal length parameters use <strong>actual</strong> recorded focal length, not 35mm equivalent. <code>width=</code>/<code>height=</code> only take effect when <code>dimension_search_mode=</code> is also set — both width and height are required together, and standalone forms like <code>min_width=</code> have no effect. <code>content_types=</code> IDs: 0=Photos, 1=Screenshots, 2=Illustration/Art, 3=Virtual Photography, 4=Videos — testing found the default search (with no content_types= set) includes all of these, contradicting the Flickr Foundation's documentation. Use content_types= to narrow down to specific types.</div>
+    </details>
   </div>
 
   <footer>

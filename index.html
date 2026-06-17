@@ -92,10 +92,10 @@
   <div class="card">
     <div class="card-title">Scope to a specific user</div>
     <div class="field-row">
-      <label for="nsid">NSID</label>
+      <label for="nsid">Flickr NSID</label>
       <input type="text" id="nsid" class="wide" placeholder="e.g. 20564446@N00" oninput="build()">
     </div>
-    <div class="hint">Scoping to a user requires their NSID — a plain username does not work for this, even though it looks similar. To find an NSID, search "flickr nsid of username" specifically in <strong>Google AI Mode</strong> — it can look this up directly. Alternatively, view the page source of the person's Flickr profile (flickr.com/people/username/) and search for "nsid". Leave blank to search all of Flickr.</div>
+    <div class="hint">Scoping to a user requires their Flickr NSID — a plain username does not work for this, even though it looks similar. To find a Flickr NSID, search "flickr nsid of username" specifically in <strong>Google AI Mode</strong> — it can look this up directly. Alternatively, view the page source of the person's Flickr profile (flickr.com/people/username/) and search for "nsid". Leave blank to search all of Flickr.</div>
   </div>
 
   <div class="card">
@@ -111,7 +111,7 @@
     <div class="hint">Text searches titles and descriptions. Tags searches tag fields only. Both can be used together.</div>
     <div class="hint" style="margin-top:6px;">If a tag has a hyphen in it, like <code>alexandra-park</code>, searching for it exactly that way won't find it. Type it with a space instead — <code>alexandra park</code> — or put it in quotes: <code>"alexandra park"</code>. To search for that tag together with another word, put both in their own quotes: <code>"alexandra park" "tree"</code>.</div>
     <div class="hint" style="margin-top:6px;">If you've just added, removed, or edited a tag, it can take several minutes for Flickr's search to catch up.</div>
-    <div class="hint" style="margin-top:6px;">To scope results to one user's photos, enter their NSID in the field above. Without it, the search covers all of Flickr.</div>
+    <div class="hint" style="margin-top:6px;">To scope results to one user's photos, enter their Flickr NSID in the field above. Without it, the search covers all of Flickr.</div>
   </div>
 
   <div class="card">
@@ -327,7 +327,7 @@
       <tr><td><code>exif_min_focallen</code></td><td>Min focal length (alt style)</td><td>mm (actual)</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>exif_max_focallen</code></td><td>Max focal length (alt style)</td><td>mm (actual)</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>cm</code></td><td>Camera model</td><td>make/model string</td><td><span class="badge badge-ok">works*</span></td></tr>
-      <tr><td><code>w</code></td><td>Scope to user (NSID only — a plain username does not work)</td><td>e.g. 20564446@N00</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>w</code></td><td>Scope to user (Flickr NSID only — a plain username does not work)</td><td>e.g. 20564446@N00</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>user_id</code></td><td>Scope to user, alternative parameter name</td><td>e.g. 20564446@N00</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>text</code></td><td>Text search</td><td>string</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>tags</code></td><td>Tag search</td><td>string</td><td><span class="badge badge-ok">works</span></td></tr>

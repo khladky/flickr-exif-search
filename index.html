@@ -384,123 +384,178 @@
 
 <script>
 function toggle(id) {
-  var el = document.getElementById(id);
-  var cb = document.getElementById('use_' + id);
-  el.classList.toggle('disabled', !cb.checked);
+    var el = document.getElementById(id);
+    var cb = document.getElementById('use_' + id);
+    el.classList.toggle('disabled', !cb.checked);
 }
 
 function switchCamMode() {
-  var isExif = document.getElementById('cam_exif').checked;
-  document.getElementById('sub_exif').classList.toggle('hidden', !isExif);
-  document.getElementById('sub_tag').classList.toggle('hidden', isExif);
+    var isExif = document.getElementById('cam_exif').checked;
+    document.getElementById('sub_exif').classList.toggle('hidden', !isExif);
+    document.getElementById('sub_tag').classList.toggle('hidden', isExif);
 }
 
-function v(id) { return document.getElementById(id).value.trim(); }
-function checked(id) { return document.getElementById(id).checked; }
+function v(id) {
+    return document.getElementById(id).value.trim();
+}
+
+function checked(id) {
+    return document.getElementById(id).checked;
+}
 
 var currentUrl = '';
 
 function build() {
-  var params = [];
-  var nsid = v('nsid').replace(/\s+/g, '-');
-  if (nsid) {
-    params.push('user_id=' + encodeURIComponent(nsid));
-  }
-  var eui = v('eui');
-  if (eui) {
-    params.push('eui=' + encodeURIComponent(eui));
-  }
+    var params = [];
+    var nsid = v('nsid').replace(/\s+/g, '-');
+    if (nsid) {
+        params.push('user_id=' + encodeURIComponent(nsid));
+    }
+    var eui = v('eui');
+    if (eui) {
+        params.push('eui=' + encodeURIComponent(eui));
+    }
 
-  var useCam = checked('use_cam');
-  var camIsExif = document.getElementById('cam_exif').checked;
-  var camTag = v('camtag');
-  var camTagMode = v('camtagmode');
+    var useCam = checked('use_cam');
+    var camIsExif = document.getElementById('cam_exif').checked;
+    var camTag = v('camtag');
+    var camTagMode = v('camtagmode');
 
-  var q = v('qtext');
-  var tags = v('tags');
+    var q = v('qtext');
+    var tags = v('tags');
 
-  if (useCam && !camIsExif && camTag) {
-    if (camTagMode === 'tags') {
-      var allTags = tags ? tags + ',' + camTag : camTag;
-      if (q) params.push('text=' + encodeURIComponent(q));
-      params.push('tags=' + encodeURIComponent(allTags));
+    if (useCam && !camIsExif && camTag) {
+        if (camTagMode === 'tags') {
+            var allTags = tags ? tags + ',' + camTag : camTag;
+            if (q) {
+                params.push('text=' + encodeURIComponent(q));
+            }
+            params.push('tags=' + encodeURIComponent(allTags));
+        } else {
+            var allText = q ? q + ' ' + camTag : camTag;
+            params.push('text=' + encodeURIComponent(allText));
+            if (tags) {
+                params.push('tags=' + encodeURIComponent(tags));
+            }
+        }
     } else {
-      var allText = q ? q + ' ' + camTag : camTag;
-      params.push('text=' + encodeURIComponent(allText));
-      if (tags) params.push('tags=' + encodeURIComponent(tags));
+        if (q) {
+            params.push('text=' + encodeURIComponent(q));
+        }
+			  if (tags) {
+            params.push('tags=' + encodeURIComponent(tags));
+        }
     }
-  } else {
-    if (q) params.push('text=' + encodeURIComponent(q));
-    else if (useCam && camIsExif) params.push('text=%2B');
-    if (tags) params.push('tags=' + encodeURIComponent(tags));
-  }
 
-  if (checked('use_ap')) {
-    var xal = v('xal'), xah = v('xah');
-    if (xal) params.push('xal=' + xal);
-    if (xah) params.push('xah=' + xah);
-  }
-  if (checked('use_ex')) {
-    var xel = v('xel'), xeh = v('xeh');
-    if (xel) params.push('xel=' + xel);
-    if (xeh) params.push('xeh=' + xeh);
-  }
-  if (checked('use_fl')) {
-    var xfl = v('xfl'), xfh = v('xfh');
-    if (xfl) params.push('exif_min_focallen=' + xfl);
-    if (xfh) params.push('exif_max_focallen=' + xfh);
-  }
-  if (useCam && camIsExif) {
-    var cm = v('cmval');
-    if (cm) params.push('cm=' + encodeURIComponent(cm));
-  }
-
-  if (checked('use_content')) {
-    var ctIds = [];
-    if (checked('ct_photos')) ctIds.push('0');
-    if (checked('ct_screenshots')) ctIds.push('1');
-    if (checked('ct_illustration')) ctIds.push('2');
-    if (checked('ct_virtual')) ctIds.push('3');
-    if (checked('ct_videos')) ctIds.push('4');
-    if (ctIds.length) params.push('content_types=' + ctIds.join(','));
-  }
-
-  if (checked('use_dim')) {
-    var dw = v('dimwidth'), dh = v('dimheight'), dmode = v('dimmode');
-    if (dw && dh) {
-      params.push('dimension_search_mode=' + dmode);
-      params.push('width=' + dw);
-      params.push('height=' + dh);
+    if (checked('use_ap')) {
+        var xal = v('xal'),
+            xah = v('xah');
+        if (xal) {
+            params.push('xal=' + xal);
+        }
+        if (xah) {
+            params.push('xah=' + xah);
+        }
     }
-  }
+    if (checked('use_ex')) {
+        var xel = v('xel'),
+            xeh = v('xeh');
+        if (xel) {
+            params.push('xel=' + xel);
+        }
+        if (xeh) {
+            params.push('xeh=' + xeh);
+        }
+    }
+    if (checked('use_fl')) {
+        var xfl = v('xfl'),
+            xfh = v('xfh');
+        if (xfl) {
+            params.push('exif_min_focallen=' + xfl);
+        }
+        if (xfh) {
+            params.push('exif_max_focallen=' + xfh);
+        }
+    }
+    if (useCam && camIsExif) {
+        var cm = v('cmval');
+        if (cm) {
+            params.push('cm=' + encodeURIComponent(cm));
+        }
+    }
 
-  var sort = v('sort');
-  if (sort) params.push('sort=' + sort);
-  if (checked('view_all')) params.push('view_all=1');
+    if (checked('use_content')) {
+        var ctIds = [];
+        if (checked('ct_photos')) {
+            ctIds.push('0');
+        }
+        if (checked('ct_screenshots')) {
+            ctIds.push('1');
+        }
+        if (checked('ct_illustration')) {
+            ctIds.push('2');
+        }
+        if (checked('ct_virtual')) {
+            ctIds.push('3');
+        }
+        if (checked('ct_videos')) {
+            ctIds.push('4');
+        }
+        if (ctIds.length) {
+            params.push('content_types=' + ctIds.join(','));
+        }
+    }
 
-  var base = 'https://www.flickr.com/search/?';
-  currentUrl = base + params.join('&');
+    if (checked('use_dim')) {
+        var dw = v('dimwidth'),
+            dh = v('dimheight'),
+            dmode = v('dimmode');
+        if (dw && dh) {
+            params.push('dimension_search_mode=' + dmode);
+            params.push('width=' + dw);
+            params.push('height=' + dh);
+        }
+    }
 
-  var box = document.getElementById('urlout');
-  box.innerHTML = '<span class="base">https://www.flickr.com/search/?</span><span class="params">' +
-    params.map(function(p) { return escHtml(p); }).join('&amp;') + '</span>';
+    var sort = v('sort');
+    if (sort) {
+        params.push('sort=' + sort);
+    }
+    if (checked('view_all')) {
+        params.push('view_all=1');
+    }
+
+    var base = 'https://www.flickr.com/search/?';
+    currentUrl = base + params.join('&');
+
+    var box = document.getElementById('urlout');
+    box.innerHTML = '<span class="base">https://www.flickr.com/search/?</span><span class="params">' +
+        params.map(function(p) {
+            return escHtml(p);
+        }).join('&amp;') + '</span>';
 }
 
 function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function copyUrl() {
-  if (!currentUrl) return;
-  navigator.clipboard.writeText(currentUrl).then(function() {
-    var btn = document.getElementById('copybtn');
-    btn.textContent = '✓ Copied';
-    setTimeout(function() { btn.textContent = '⌘ Copy URL'; }, 1500);
-  });
+    if (!currentUrl) {
+        return;
+    }
+    navigator.clipboard.writeText(currentUrl).then(function() {
+        var btn = document.getElementById('copybtn');
+        btn.textContent = '✓ Copied';
+        setTimeout(function() {
+            btn.textContent = '⌘ Copy URL';
+        }, 1500);
+    });
 }
 
 function openUrl() {
-  if (currentUrl) window.open(currentUrl, '_blank');
+    if (currentUrl) {
+        window.open(currentUrl, '_blank');
+    }
 }
 
 build();

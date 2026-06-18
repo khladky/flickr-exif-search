@@ -533,7 +533,6 @@ function build() {
     }
   } else {
     if (q) params.push('text=' + encodeURIComponent(q));
-    else if (useCam && camIsExif) params.push('text=+');
     if (tags) params.push('tags=' + encodeURIComponent(tags));
   }
 

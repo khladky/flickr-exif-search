@@ -123,16 +123,53 @@
     <div class="card-title">Text and tag search</div>
     <div class="field-row">
       <label for="qtext">Text search</label>
-      <input type="text" id="qtext" class="wide" placeholder="e.g. night" oninput="build()">
+      <input type="text" id="qtext" class="wide" placeholder="e.g. night" oninput="updateGeoAvailability()">
     </div>
     <div class="field-row">
       <label for="tags">Tags</label>
-      <input type="text" id="tags" class="wide" placeholder="e.g. tz100" oninput="build()">
+      <input type="text" id="tags" class="wide" placeholder="e.g. tz100" oninput="updateGeoAvailability()">
     </div>
     <div class="hint">Text searches titles and descriptions. Tags searches tag fields only. Both can be used together.</div>
     <div class="hint" style="margin-top:6px;">If a tag has a hyphen in it, like <code>alexandra-park</code>, searching for it exactly that way won't find it. Type it with a space instead — <code>alexandra park</code> — or put it in quotes: <code>"alexandra park"</code>. To search for that tag together with another word, put both in their own quotes: <code>"alexandra park" "tree"</code>.</div>
     <div class="hint" style="margin-top:6px;">If you've just added, removed, or edited a tag, it can take several minutes for Flickr's search to catch up.</div>
     <div class="hint" style="margin-top:6px;">To scope results to one user's photos, enter their Flickr NSID in the field above. Without it, the search covers all of Flickr.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Geographic radius</div>
+    <div class="toggle-row">
+      <input type="checkbox" id="use_geo" onchange="toggle('geo'); build()">
+      <label for="use_geo">Filter by distance from a point</label>
+    </div>
+    <div class="hint" id="geo-warning" style="display:none; color:#991b1b; margin-top:-6px; margin-bottom:10px;">Type a word in the Text search or Tags field above first — geo search returns nothing without a real search term alongside it.</div>
+    <div class="fields-group disabled" id="geo">
+      <div class="field-row">
+        <label for="geopaste">Paste "lat, lon" here</label>
+        <input type="text" id="geopaste" class="wide" placeholder="e.g. 51.503256371814985, -0.12754728675446725" oninput="splitGeoPaste()">
+      </div>
+      <div class="field-row">
+        <label for="geolat">Latitude</label>
+        <input type="text" id="geolat" value="51.503256371814985" placeholder="e.g. 51.5032" oninput="build()">
+      </div>
+      <div class="field-row">
+        <label for="geolon">Longitude</label>
+        <input type="text" id="geolon" value="-0.12754728675446725" placeholder="e.g. -0.1275" oninput="build()">
+      </div>
+      <div class="field-row">
+        <label for="georadius">Radius</label>
+        <input type="number" id="georadius" min="0" max="32" step="0.1" value="5" oninput="build()" onblur="clampRadiusValue(); build()">
+      </div>
+      <div class="field-row">
+        <label for="geounits">Units</label>
+        <select id="geounits" onchange="updateRadiusMax(); build()">
+          <option value="">Default (km)</option>
+          <option value="km">Kilometres</option>
+          <option value="mi">Miles</option>
+        </select>
+      </div>
+      <div class="hint">Maximum radius is 32km, or just under 21 miles. Minimum tested working radius is 0.01km (about 10 metres).</div>
+      <div class="hint" style="margin-top:6px;">To get coordinates: on <strong>Google Maps</strong>, right-click any spot — the decimal coordinates appear at the top of the menu and copy to your clipboard when clicked. On <strong>OpenStreetMap</strong>, right-click and choose "Show address" to see the coordinates. Either way you'll get latitude and longitude together separated by a comma — paste that pair straight into the box above and it'll split into the two fields automatically.</div>
+    </div>
   </div>
 
   <div class="card">
@@ -354,6 +391,9 @@
       <tr><td><code>w</code></td><td>Scope to user (Flickr NSID only — a plain username does not work)</td><td>e.g. 99999999@N00</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>user_id</code></td><td>Scope to user — accepts either a plain username or NSID</td><td>e.g. someusername or 99999999@N00</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>eui</code></td><td>Exclude one or more users' photos (comma-separated, NSID only)</td><td>Flickr NSID</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>lat</code> + <code>lon</code></td><td>Center point for a geographic radius search</td><td>decimal degrees</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>radius</code></td><td>Distance from lat/lon to search within (requires lat/lon to be set)</td><td>up to 32 (km), just under 21 (mi)</td><td><span class="badge badge-ok">works</span></td></tr>
+      <tr><td><code>radius_units</code></td><td>Unit for radius — km or mi (defaults to km if omitted)</td><td>km / mi</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>text</code></td><td>Text search</td><td>string</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>tags</code></td><td>Tag search</td><td>string</td><td><span class="badge badge-ok">works</span></td></tr>
       <tr><td><code>sort</code></td><td>Sort order</td><td>see builder</td><td><span class="badge badge-ok">works</span></td></tr>
@@ -376,6 +416,7 @@
     and documented by <a href="http://blog.michael-lowry.com/2008/01/flickr-exif-search.html" target="_blank">Michael A. Lowry (2008)</a>
     and <a href="https://cogdogblog.com/2015/05/monkeying-around/" target="_blank">Alan Levine (2015)</a>.
     content_types= documented by the <a href="https://www.flickr.org/flickr-commons-about-content-type-on-flickr-com/" target="_blank">Flickr Foundation (2023)</a>.
+    lat=/lon=/radius=/radius_units= documented in the official <a href="https://www.flickr.com/services/api/flickr.photos.search.html" target="_blank">Flickr API reference</a>, confirmed to also work on the web search URL in June 2026.
     exif_min/max_focallen, exif_min/max_aperture, exif_min/max_exposure, tags=, user_id=, eui=, sort=, view_all=1,
     dimension_search_mode/width/height, focal length correction and non-working parameters confirmed June 2026.
   </footer>
@@ -389,6 +430,42 @@ function toggle(id) {
   el.classList.toggle('disabled', !cb.checked);
 }
 
+function clampRadiusValue() {
+  var units = v('geounits');
+  var maxVal = (units === 'mi') ? 20.99 : 32;
+  var input = document.getElementById('georadius');
+  var val = parseFloat(input.value);
+  if (!isNaN(val) && val > maxVal) {
+    input.value = maxVal;
+  }
+}
+
+function updateRadiusMax() {
+  var units = v('geounits');
+  var input = document.getElementById('georadius');
+  var newMax = (units === 'mi') ? 20.99 : 32;
+  input.max = newMax;
+  if (parseFloat(input.value) > newMax) input.value = newMax;
+}
+
+function updateGeoAvailability() {
+  var hasQuery = v('qtext') || v('tags');
+  var cb = document.getElementById('use_geo');
+  var warning = document.getElementById('geo-warning');
+  if (!hasQuery) {
+    if (cb.checked) {
+      cb.checked = false;
+      toggle('geo');
+    }
+    cb.disabled = true;
+    warning.style.display = 'block';
+  } else {
+    cb.disabled = false;
+    warning.style.display = 'none';
+  }
+  build();
+}
+
 function switchCamMode() {
   var isExif = document.getElementById('cam_exif').checked;
   document.getElementById('sub_exif').classList.toggle('hidden', !isExif);
@@ -400,6 +477,16 @@ function checked(id) { return document.getElementById(id).checked; }
 
 var currentUrl = '';
 
+function splitGeoPaste() {
+  var raw = v('geopaste');
+  var match = raw.match(/(-?\d+\.?\d*)\s*[,\s]\s*(-?\d+\.?\d*)/);
+  if (match) {
+    document.getElementById('geolat').value = match[1];
+    document.getElementById('geolon').value = match[2];
+  }
+  build();
+}
+
 function build() {
   var params = [];
   var nsid = v('nsid').replace(/\s+/g, '-');
@@ -409,6 +496,20 @@ function build() {
   var eui = v('eui');
   if (eui) {
     params.push('eui=' + encodeURIComponent(eui));
+  }
+  if (checked('use_geo')) {
+    var glat = v('geolat'), glon = v('geolon'), grad = v('georadius'), gunits = v('geounits');
+    if (glat && glon) {
+      params.push('lat=' + encodeURIComponent(glat));
+      params.push('lon=' + encodeURIComponent(glon));
+      if (grad) {
+        var gradNum = parseFloat(grad);
+        var gradMax = (gunits === 'mi') ? 20.99 : 32;
+        if (!isNaN(gradNum) && gradNum > gradMax) gradNum = gradMax;
+        params.push('radius=' + gradNum);
+      }
+      if (gunits) params.push('radius_units=' + gunits);
+    }
   }
 
   var useCam = checked('use_cam');
@@ -431,7 +532,7 @@ function build() {
     }
   } else {
     if (q) params.push('text=' + encodeURIComponent(q));
-    else if (useCam && camIsExif) params.push('text=%2B');
+    else if (useCam && camIsExif) params.push('text=+');
     if (tags) params.push('tags=' + encodeURIComponent(tags));
   }
 
@@ -492,18 +593,48 @@ function escHtml(s) {
 
 function copyUrl() {
   if (!currentUrl) return;
-  navigator.clipboard.writeText(currentUrl).then(function() {
-    var btn = document.getElementById('copybtn');
+  var btn = document.getElementById('copybtn');
+
+  function showCopied() {
     btn.textContent = '✓ Copied';
     setTimeout(function() { btn.textContent = '⌘ Copy URL'; }, 1500);
-  });
+  }
+
+  function fallbackCopy() {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = currentUrl;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (ok) {
+        showCopied();
+      } else {
+        btn.textContent = 'Copy failed — select manually';
+        setTimeout(function() { btn.textContent = '⌘ Copy URL'; }, 2000);
+      }
+    } catch (e) {
+      btn.textContent = 'Copy failed — select manually';
+      setTimeout(function() { btn.textContent = '⌘ Copy URL'; }, 2000);
+    }
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(currentUrl).then(showCopied).catch(fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
 }
 
 function openUrl() {
   if (currentUrl) window.open(currentUrl, '_blank');
 }
 
-build();
+updateGeoAvailability();
 </script>
 </body>
 </html>

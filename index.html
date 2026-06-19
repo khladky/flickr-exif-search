@@ -44,6 +44,7 @@
   .toggle-row label { font-size: 13px; color: #374151; cursor: pointer; font-weight: 500; }
   .fields-group { padding: 10px 12px 10px 22px; border-left: 2px solid #e5e7eb; margin-left: 7px; border-radius: 0 8px 8px 0; transition: background-color 0.15s; }
   .fields-group.disabled { background: #f3f4f6; pointer-events: none; }
+  .fields-group.disabled a { pointer-events: auto; }
   .hint { font-size: 12px; color: #1a1a1a; margin-top: 8px; line-height: 1.5; }
   .hint code { font-family: monospace; font-size: 11px; background: #f3f4f6; padding: 1px 4px; border-radius: 3px; }
   .radio-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -89,6 +90,7 @@
   .badge-no { background: #fee2e2; color: #991b1b; }
   footer { margin-top: 2rem; font-size: 12px; color: #1a1a1a; text-align: center; line-height: 1.7; }
   footer a { color: #0063dc; }
+  .hint a { color: #0063dc; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -171,7 +173,7 @@
       </div>
       <div class="hint">Maximum radius is 32km, or just under 21 miles. Minimum tested working radius is 0.01km (about 10 metres).</div>
       <div class="hint" style="margin-top:6px; color:#991b1b;">This filter does not work combined with the "Scope to a specific user" field above — testing found that adding a username or NSID alongside geo search silently ignores the geo filter and falls back to showing that user's entire photostream. Leave the user field blank to use geo search.</div>
-      <div class="hint" style="margin-top:6px;">To get coordinates: on <strong>Google Maps</strong>, right-click any spot — the decimal coordinates appear at the top of the menu and copy to your clipboard when clicked. On <strong>OpenStreetMap</strong>, right-click and choose "Show address" to see the coordinates. Either way you'll get latitude and longitude together separated by a comma — paste that pair straight into the box above and it'll split into the two fields automatically.</div>
+      <div class="hint" style="margin-top:6px;">To get coordinates: on <strong>Google Maps</strong>, right-click any spot — the decimal coordinates appear at the top of the menu and copy to your clipboard when clicked on. Alternatively, <a href="https://www.calcmaps.com/map-radius/" target="_blank">calcmaps.com/map-radius</a> (built on OpenStreetMap) lets you find coordinates on a map and visually draw out the radius circle. Either way you'll get latitude and longitude together separated by a comma — paste that pair straight into the box above and it'll split into the two fields automatically.</div>
     </div>
   </div>
 

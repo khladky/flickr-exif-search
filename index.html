@@ -97,6 +97,7 @@
   <header>
     <h1>Flickr EXIF search URL builder</h1>
     <p>Build search URLs using Flickr's undocumented EXIF filter parameters. Confirmed working June 2026.</p>
+    <p style="font-size: 11px; color: #6b7280; margin-top: 4px;">v1.0 — last updated 19 June 2026, 08:40 GMT</p>
   </header>
 
   <div class="filters-grid">
@@ -105,9 +106,10 @@
     <div class="card-title">Scope to a specific user</div>
     <div class="field-row">
       <label for="nsid">Username or NSID</label>
-      <input type="text" id="nsid" class="wide" placeholder="e.g. someusername" oninput="build()">
+      <input type="text" id="nsid" class="wide" placeholder="e.g. someusername" oninput="updateGeoAvailability()">
     </div>
-    <div class="hint">This field accepts either a person's regular Flickr username (the one in their profile URL) or their Flickr NSID — both work here. If you type a display name with spaces, like "Some User", they're automatically converted to hyphens for you (some-user). Leave blank to search all of Flickr.</div>
+    <div class="hint">This field accepts either a person's regular Flickr username (the one in their profile URL) or their Flickr NSID — both work here. Whatever you type is used exactly as entered, with no automatic reformatting. Leave blank to search all of Flickr.</div>
+    <div class="hint" style="margin-top:6px;">A multi-word display name doesn't always become hyphenated in the actual username — "John Brown" might be john-brown, or it might be johnbrown with no separator at all, or something else entirely. If guessing doesn't work, check the person's profile page directly — the real username appears in the address bar after flickr.com/people/.</div>
   </div>
 
   <div class="card">
@@ -168,6 +170,7 @@
         </select>
       </div>
       <div class="hint">Maximum radius is 32km, or just under 21 miles. Minimum tested working radius is 0.01km (about 10 metres).</div>
+      <div class="hint" style="margin-top:6px; color:#991b1b;">This filter does not work combined with the "Scope to a specific user" field above — testing found that adding a username or NSID alongside geo search silently ignores the geo filter and falls back to showing that user's entire photostream. Leave the user field blank to use geo search.</div>
       <div class="hint" style="margin-top:6px;">To get coordinates: on <strong>Google Maps</strong>, right-click any spot — the decimal coordinates appear at the top of the menu and copy to your clipboard when clicked. On <strong>OpenStreetMap</strong>, right-click and choose "Show address" to see the coordinates. Either way you'll get latitude and longitude together separated by a comma — paste that pair straight into the box above and it'll split into the two fields automatically.</div>
     </div>
   </div>
@@ -451,14 +454,20 @@ function updateRadiusMax() {
 
 function updateGeoAvailability() {
   var hasQuery = v('qtext') || v('tags');
+  var hasUser = v('nsid');
   var cb = document.getElementById('use_geo');
   var warning = document.getElementById('geo-warning');
-  if (!hasQuery) {
+  if (!hasQuery || hasUser) {
     if (cb.checked) {
       cb.checked = false;
       toggle('geo');
     }
     cb.disabled = true;
+    if (hasUser) {
+      warning.textContent = 'Geo search does not work combined with the "Scope to a specific user" field — clear that field first to use geo search.';
+    } else {
+      warning.textContent = 'Type a word in the Text search or Tags field above first — geo search returns nothing without a real search term alongside it.';
+    }
     warning.style.display = 'block';
   } else {
     cb.disabled = false;
@@ -490,7 +499,7 @@ function splitGeoPaste() {
 
 function build() {
   var params = [];
-  var nsid = v('nsid').replace(/\s+/g, '-');
+  var nsid = v('nsid');
   if (nsid) {
     params.push('user_id=' + encodeURIComponent(nsid));
   }
